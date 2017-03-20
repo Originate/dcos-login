@@ -5,6 +5,8 @@ default: test
 tools:
 	go get -u github.com/Masterminds/glide
 	go get -u github.com/golang/lint/golint
+	go get -u github.com/mitchellh/gox
+	go get -u github.com/tcnksm/ghr
 
 # dev creates binaries for testing locally. These are put
 # into ./bin/ as well as $GOPATH/bin

@@ -1,4 +1,21 @@
-hash: 931e705712677c757c9881208c8b274517295c4feeaf9710d2d1bee849666848
-updated: 2017-03-20T15:16:00.077493235-04:00
-imports: []
+hash: ab4ad24a2f09e9f7ab69bbb8927af9845d8bdd55dad9f129f0c45de676a995ca
+updated: 2017-03-20T17:55:56.051247449-04:00
+imports:
+- name: github.com/alecthomas/template
+  version: a0175ee3bccc567396460bf5acd36800cb10c49c
+  subpackages:
+  - parse
+- name: github.com/alecthomas/units
+  version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
+- name: github.com/andybalholm/cascadia
+  version: 349dd0209470eabd9514242c688c403c0926d266
+- name: github.com/PuerkitoBio/goquery
+  version: e1271ee34c6a305e38566ecd27ae374944907ee9
+- name: golang.org/x/net
+  version: f315505cf3349909cdf013ea56690da34e96a451
+  subpackages:
+  - html
+  - html/atom
+- name: gopkg.in/alecthomas/kingpin.v2
+  version: e9044be3ab2a8e11d4e1f418d12f0790d57e8d70
 testImports: []
