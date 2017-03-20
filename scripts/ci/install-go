@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ ! -z ${VERBOSE+x} ]]; then
+  set -x
+fi
+
+GO_VERSION="go1.8.linux-amd64.tar.gz"
+
+if [ ! -f "$HOME/.cache/$GO_VERSION" ]; then
+  mkdir -p "$HOME/.cache"
+  curl -o "$HOME/.cache/$GO_VERSION" "https://storage.googleapis.com/golang/$GO_VERSION"
+fi
+
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "$HOME/.cache/$GO_VERSION"

@@ -1,0 +1,15 @@
+machine:
+  environment:
+    PATH: $HOME/.cache/bin:$PATH
+    PROJECT: "$HOME/.go_workspace/src/github.com/Originate/dcos-login"
+
+dependencies:
+  override:
+    - scripts/ci/prepare
+
+  cache_directories:
+    - "~/.cache"
+
+test:
+  override:
+    - make test vet

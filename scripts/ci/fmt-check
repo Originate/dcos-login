@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+echo "==> Checking that code complies with gofmt requirements..."
+FILES=$(gofmt -s -l $(find . -name '*.go' | grep -v vendor))
+if [[ -n ${FILES} ]]; then
+    echo 'gofmt needs to be run on the following files:'
+    echo "${FILES}"
+    echo "You can use the command: \`make fmt\` to reformat code."
+    exit 1
+fi
+
+exit 0

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ ! -z ${VERBOSE+x} ]]; then
+  set -x
+fi
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Move the project into the right location
+rm -rf "$PROJECT"
+mkdir -p "$(dirname "$PROJECT")"
+mv "$HOME/dcos-login" "$PROJECT"
+ln -s "$PROJECT" "$HOME/dcos-login"
+
+# Install dependencies
+"$DIR/install-go"
+make tools
+glide install
