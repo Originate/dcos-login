@@ -1,3 +1,7 @@
+machine:
+  environment:
+    PATH: $HOME/.cache/bin:$PATH
+
 dependencies:
   override:
     - scripts/ci/prepare

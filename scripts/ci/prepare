@@ -7,3 +7,19 @@ if [[ ! -z ${VERBOSE+x} ]]; then
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+install_dcos_cli() {
+  curl -sSL "https://downloads.dcos.io/binaries/cli/linux/x86-64/0.4.16/dcos" -o "$HOME/.cache/bin/dcos"
+}
+
+install_dcos_login_cli() {
+  LATEST_RELEASE="$(curl -sSL -u "bowbaq:$GITHUB_TOKEN" https://api.github.com/repos/Originate/dcos-login/releases/latest)"
+  LATEST_DOWNLOAD_URL=$(jq -r '.assets[] | select(.name == "dcos-login_linux_amd64") | .url' <<< "$LATEST_RELEASE")
+
+  mkdir -p "$HOME/.cache/bin"
+  curl -sSL -u "bowbaq:$GITHUB_TOKEN" -H 'Accept: application/octet-stream' "$LATEST_DOWNLOAD_URL" -o "$HOME/.cache/bin/dcos-login"
+  chmod u+x "$HOME/.cache/bin/dcos-login"
+}
+
+install_dcos_cli
+install_dcos_login_cli
