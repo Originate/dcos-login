@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ ! -z ${VERBOSE+x} ]]; then
+  set -x
+fi
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+SERVICE="$1"
+SERVICE_MANIFEST="$SERVICE/marathon.json"
+SERVICE_ID="/$(jq -r '.id' "$SERVICE_MANIFEST")"
+
+app_exists() {
+  dcos marathon app list --json | jq  -r '.[].id' | grep -Eq "^$SERVICE_ID$"
+}
+
+if app_exists; then
+  dcos marathon app update "$SERVICE_ID" < "$SERVICE_MANIFEST" --force
+else
+  dcos marathon app add < "$SERVICE_MANIFEST"
+fi

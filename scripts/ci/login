@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-if [[ ! -z ${VERBOSE+x} ]]; then
-  set -x
-fi
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Check that all required variables are set
@@ -17,9 +13,10 @@ for NAME in CLUSTER_URL GH_USERNAME GH_PASSWORD; do
   fi
 done
 
+if [[ ! -z ${VERBOSE+x} ]]; then
+  set -x
+fi
+
 # Setup the DC/OS CLI
 dcos config set core.dcos_url "$CLUSTER_URL"
 dcos config set core.dcos_acs_token "$(dcos-login)"
-
-# Check that it works
-dcos marathon app list

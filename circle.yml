@@ -17,4 +17,6 @@ deployment:
   master:
     branch: example
     commands:
-      - scripts/ci/deploy
+      - scripts/ci/login
+      - scripts/ci/marathon-deploy services/example
+      # - scripts/ci/metronome-deploy jobs/example
