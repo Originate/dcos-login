@@ -12,11 +12,13 @@ SERVICE="$1"
 SERVICE_MANIFEST="$SERVICE/marathon.json"
 SERVICE_ID="/$(jq -r '.id' "$SERVICE_MANIFEST")"
 
-app_exists() {
-  dcos marathon app list --json | jq  -r '.[].id' | grep -Eq "^$SERVICE_ID$"
+service_exists() {
+  local service_id="$1"
+
+  dcos marathon app list --json | jq  -r '.[].id' | grep -Eq "^$service_id$"
 }
 
-if app_exists; then
+if service_exists "$SERVICE_ID"; then
   dcos marathon app update "$SERVICE_ID" < "$SERVICE_MANIFEST" --force
 else
   dcos marathon app add < "$SERVICE_MANIFEST"

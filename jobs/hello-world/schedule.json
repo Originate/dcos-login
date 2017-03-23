@@ -1,0 +1,9 @@
+[
+  {
+    "id": "sleep-schedule",
+    "enabled": true,
+    "cron": "20 0 * * *",
+    "timezone": "UTC",
+    "concurrencyPolicy": "ALLOW"
+  }
+]

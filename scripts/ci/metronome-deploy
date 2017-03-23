@@ -8,15 +8,23 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Check that all required variables are set
-for NAME in CLUSTER_URL GH_USERNAME GH_PASSWORD; do
-  eval VALUE=\$$NAME
-  if [[ -z ${VALUE+x} ]]; then
-    echo "$NAME is not set, moving on"
-    exit 0
-  fi
-done
 
-# Setup the DC/OS CLI
-dcos config set core.dcos_url "$CLUSTER_URL"
-dcos config set core.dcos_acs_token "$(dcos-login)"
+JOB="$1"
+JOB_MANIFEST="$JOB/job.json"
+JOB_SCHEDULE="$JOB/schedule.json"
+JOB_ID="/$(jq -r '.id' "$JOB_MANIFEST")"
+
+function job_exists() {
+  local job_id="$1"
+
+  dcos job list --json | jq  -r '.[].id' | grep -Eq "^$job_id$"
+}
+
+if job_exists; then
+  dcos job update "$JOB_MANIFEST"
+  # Running `dcos job update` with an embdedded schedules doesn't work
+  dcos job schedule update "$JOB_ID" "$JOB_SCHEDULE"
+else
+  dcos job add "$JOB_MANIFEST"
+  dcos job schedule add "$JOB_ID" "$JOB_SCHEDULE"
+fi
