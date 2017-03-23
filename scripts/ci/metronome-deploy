@@ -20,7 +20,7 @@ function job_exists() {
   dcos job list --json | jq  -r '.[].id' | grep -Eq "^$job_id$"
 }
 
-if job_exists; then
+if job_exists "$JOB_ID"; then
   dcos job update "$JOB_MANIFEST"
   # Running `dcos job update` with an embdedded schedules doesn't work
   dcos job schedule update "$JOB_ID" "$JOB_SCHEDULE"
