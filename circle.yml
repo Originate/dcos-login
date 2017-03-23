@@ -17,4 +17,4 @@ deployment:
   master:
     branch: example
     commands:
-      - echo "TODO"
+      - scripts/ci/deploy
