@@ -2,6 +2,7 @@
 package dcoslogin
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
@@ -50,13 +51,19 @@ func Login(o *Options) error {
 		return err
 	}
 
-	// Authenticate with Github, get the ACS token back
-	acsToken, err := client.githubAuthenticate(csrfToken, *o.Username, *o.Password)
+	// Authenticate with Github, get the Auth0 token back
+	auth0Token, err := client.githubAuthenticate(csrfToken, *o.Username, *o.Password)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(acsToken)
+	// Exchange the Auth0 token for a DC/OS token
+	dcosToken, err := client.finishLogin(*o.ClusterURL, auth0Token)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(dcosToken)
 
 	return nil
 }
@@ -105,6 +112,25 @@ func (c *client) Get(endpoint string, query url.Values) (*http.Response, error) 
 
 func (c *client) PostForm(endpoint string, data url.Values) (*http.Response, error) {
 	res, err := c.Client.Post(endpoint, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := checkStatus(res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (c *client) PostJSON(endpoint string, data interface{}) (*http.Response, error) {
+	var encoded bytes.Buffer
+	err := json.NewEncoder(&encoded).Encode(data)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.Client.Post(endpoint, "application/json", &encoded)
 	if err != nil {
 		return nil, err
 	}
@@ -172,6 +198,25 @@ func (c *client) githubAuthenticate(csrfToken, username, password string) (strin
 	}
 
 	return getLoginToken(tokenRes)
+}
+
+func (c *client) finishLogin(clusterURL, auth0Token string) (string, error) {
+	res, err := c.PostJSON(clusterURL+"/acs/api/v1/auth/login", map[string]string{
+		"token": auth0Token,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	var output struct {
+		Token string
+	}
+	err = json.NewDecoder(res.Body).Decode(&output)
+	if err != nil {
+		return "", err
+	}
+
+	return output.Token, nil
 }
 
 func (c *client) followLoginRedirect(res *http.Response) (*http.Response, error) {
