@@ -18,7 +18,7 @@ deployment:
   master:
     branch: master
     commands:
-      - gox -arch "!386 !arm" -ldflags "-X main.Version=$CIRCLE_BUILD_NUM" -output "dist/dcos-login_{{.OS}}_{{.Arch}}":
+      - gox -arch "!386 !arm" -ldflags "-X main.Version=v0.$CIRCLE_BUILD_NUM" -output "dist/dcos-login_{{.OS}}_{{.Arch}}":
           pwd: cmd/dcos-login
       - ghr -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME "v0.$CIRCLE_BUILD_NUM" dist/:
           pwd: cmd/dcos-login
